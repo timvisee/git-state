@@ -1,0 +1,84 @@
+image: "rust:slim"
+
+stages:
+  - check
+  - build
+  - release
+  - package
+
+# Variable defaults
+variables:
+  RUST_VERSION: stable
+  RUST_TARGET: x86_64-unknown-linux-gnu
+
+# Cache rust/cargo/build artifacts
+cache:
+  key: "$CI_PIPELINE_ID-$RUST_VERSION"
+  paths:
+    - /usr/local/cargo/registry/
+    - /usr/local/rustup/toolchains/
+    - /usr/local/rustup/update-hashes/
+    - target/
+
+# Install compiler and OpenSSL dependencies
+before_script:
+  - |
+    rustup install $RUST_VERSION
+    rustup default $RUST_VERSION
+  - |
+    rustc --version
+    cargo --version
+
+# Check on stable, beta and nightly 
+.check-base: &check-base
+  stage: check
+  script:
+    - cargo check --verbose
+check-stable:
+  <<: *check-base
+check-beta:
+  <<: *check-base
+  variables:
+    RUST_VERSION: beta
+check-nightly:
+  <<: *check-base
+  variables:
+    RUST_VERSION: nightly
+check-old:
+  <<: *check-base
+  variables:
+    RUST_VERSION: "1.41.0"
+
+# Build using Rust stable
+build-x86_64-linux-gnu:
+  stage: build
+  needs: []
+  script:
+    - cargo build --target=$RUST_TARGET --release --verbose
+    - mv target/$RUST_TARGET/release/git-state ./git-state-$RUST_TARGET
+    - strip -g ./git-state-$RUST_TARGET
+  artifacts:
+    name: git-state-x86_64-linux-gnu
+    paths:
+      - git-state-$RUST_TARGET
+    expire_in: 1 month
+
+# Build a static version
+build-x86_64-linux-musl:
+  stage: build
+  needs: []
+  variables:
+    RUST_TARGET: x86_64-unknown-linux-musl
+  script:
+    - rustup target add $RUST_TARGET
+    - cargo build --target=$RUST_TARGET --release --verbose
+
+    # Prepare the release artifact, strip it
+    - find . -name git-state -exec ls -lah {} \;
+    - mv target/$RUST_TARGET/release/git-state ./git-state-$RUST_TARGET
+    - strip -g ./git-state-$RUST_TARGET
+  artifacts:
+    name: git-state-x86_64-linux-musl
+    paths:
+      - git-state-$RUST_TARGET
+    expire_in: 1 month
