@@ -13,6 +13,7 @@
 
 # git-state
 A simple binary and Rust library to probe the state of a git repository.
+Useful for shell prompts.
 
 This reimplements [`git2::git_repository_state`][git2-function] in pure Rust.
 This doesn't have any nasty compile or runtime `git2` dependencies.

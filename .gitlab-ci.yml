@@ -4,7 +4,6 @@ stages:
   - check
   - build
   - release
-  - package
 
 # Variable defaults
 variables:
@@ -82,3 +81,15 @@ build-x86_64-linux-musl:
     paths:
       - git-state-$RUST_TARGET
     expire_in: 1 month
+
+# Cargo crate release
+release-crate:
+  stage: release
+  dependencies: []
+  only:
+    - /^v(\d+\.)*\d+$/
+  script:
+    - echo "Creating release crate to publish on crates.io..."
+    - echo $CARGO_TOKEN | cargo login
+    - echo "Publishing crate to crates.io..."
+    - cargo publish --verbose --allow-dirty

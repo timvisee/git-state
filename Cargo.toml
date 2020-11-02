@@ -8,11 +8,7 @@ readme = "README.md"
 repository = "https://gitlab.com/timvisee/git-state"
 description = "Probe git repository state"
 keywords = ["git", "state", "git2"]
-categories = [
-    "authentication",
-    "command-line-utilities",
-    "cryptography",
-]
+categories = ["command-line-utilities"]
 edition = "2018"
 
 [badges]
