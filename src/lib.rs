@@ -8,7 +8,7 @@ use std::path::Path;
 ///
 /// Based on:
 /// - https://github.com/libgit2/libgit2/blob/52294c413100ed4930764addc69beadd82382a4c/src/repository.c#L2867-L2908
-/// - https://libgit2.org/libgit2/#HEAD/type/git_repository_state_t
+/// - https://libgit2.org/libgit2/#HEAD/group/repository/git_repository_state
 pub fn git_state(repo: &Path) -> Result<RepositoryState, ()> {
     let git_dir = repo.join(".git");
     let git_dir = if git_dir.is_dir() { &git_dir } else { repo };
