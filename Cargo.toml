@@ -1,0 +1,21 @@
+[package]
+name = "git-state"
+version = "0.1.0"
+authors = ["Tim Visee <3a4fb3964f@sinenomine.email>"]
+license = "MIT"
+readme = "README.md"
+# homepage = "https://timvisee.com/projects/git-state"
+repository = "https://gitlab.com/timvisee/git-state"
+description = "Probe git repository state"
+keywords = ["git", "state", "git2"]
+categories = [
+    "authentication",
+    "command-line-utilities",
+    "cryptography",
+]
+edition = "2018"
+
+[badges]
+gitlab = { repository = "timvisee/git-state", branch = "master" }
+
+[dependencies]
